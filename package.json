@@ -22,6 +22,7 @@
   "main": "lib/dist/src/index.js",
   "typings": "lib/dist/src/index.d.ts",
   "scripts": {
+    "prepare": "npm run build",
     "build": "node ./scripts/build",
     "watch": "node ./scripts/watch",
     "xcode": "open playground/ios/playground.xcworkspace",
