@@ -66,9 +66,50 @@
     }
 }
 
+// workaround for ios 18
 - (void)viewDidLoad {
+    if (@available(iOS 18.0, *))
+    {
+        if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad)
+        {
+            self.traitOverrides.horizontalSizeClass = UIUserInterfaceSizeClassCompact; //TAB BAR ON BOTTOM
+        }
+        self.delegate = self;
+    }
     [super viewDidLoad];
 }
+
+- (id<UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController
+                                                animationControllerForTransitionFromViewController:(UIViewController *)fromVC
+                                                toViewController:(UIViewController *)toVC {
+    return self;
+}
+
+- (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
+    return 0;
+}
+
+- (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
+    UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
+
+    if (toView == nil) {
+        [transitionContext completeTransition:NO];
+        return;
+    }
+
+    UIView *containerView = [transitionContext containerView];
+
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+
+    [containerView addSubview:toView];
+
+    [transitionContext completeTransition:YES];
+
+    [CATransaction commit];
+}
+
+// end of code for ios 18 - remove bottom tabs animation + force tabs to stay at bottom on ipad
 
 - (void)createTabBarItems:(NSArray<UIViewController *> *)childViewControllers {
     for (UIViewController *child in childViewControllers) {
